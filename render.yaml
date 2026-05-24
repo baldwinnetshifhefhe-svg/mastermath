@@ -1,0 +1,30 @@
+# Render.com Blueprint — MasterMaths web app.
+# Pure-static deployment: no build step, just serve files from the repo root.
+# After pushing to GitHub, open render.com → "New +" → "Blueprint" → point at
+# this repo. Render reads this file and provisions the service automatically.
+
+services:
+  - type: web
+    name: mastermath
+    env: static
+    plan: free
+    buildCommand: ""           # no compile step — pure ES modules
+    staticPublishPath: .       # serve from the repo root
+    pullRequestPreviewsEnabled: true
+    headers:
+      # The hash-routed SPA doesn't have stale-route problems, but make sure
+      # the HTML itself is never aggressively cached so deploys propagate fast.
+      - path: /index.html
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+      # Assets get long cache — change a file name and a redeploy will bust it.
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=86400
+    routes:
+      # Hash routes (#/about) don't need server rewrites, but a deep link like
+      # /about typed directly would 404 — send unmatched paths to index.html
+      # so the client router can resolve them.
+      - type: rewrite
+        source: /*
+        destination: /index.html
