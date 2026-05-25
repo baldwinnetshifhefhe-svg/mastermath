@@ -6,8 +6,7 @@
 services:
   - type: web
     name: mastermath
-    env: static
-    plan: free
+    runtime: static            # static sites have no plan field — they're always free
     buildCommand: ""           # no compile step — pure ES modules
     staticPublishPath: .       # serve from the repo root
     pullRequestPreviewsEnabled: true
