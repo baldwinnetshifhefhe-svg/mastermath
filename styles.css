@@ -605,12 +605,19 @@ input:focus, textarea:focus, select:focus {
   margin: 14px 0 10px;
 }
 .q-diagram-img {
-  display: block; max-width: 100%; height: auto;
+  display: block;
+  max-width: 100%; width: auto;
+  max-height: 420px; height: auto;   /* cap height so a tall scan can't dominate */
+  object-fit: contain;
+  margin: 0 auto;                    /* centre it in the card */
   border: 1px solid var(--border-2);
   border-radius: 6px;
   background: #fff;            /* DBE diagrams are usually black-on-white scans */
   padding: 6px;
   box-shadow: var(--shadow-soft);
+}
+@media (max-width: 600px) {
+  .q-diagram-img { max-height: 300px; }
 }
 
 .q-source-link {
