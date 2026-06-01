@@ -70,6 +70,16 @@ export async function questionScreen({ questionId }) {
   let aiLoading = false;
   let reportSent = false;
 
+  // Progress capture: when did the student open this question, did they use a
+  // hint/AI, and how did they self-mark it once. One attempt logged per visit.
+  const attemptStart = Date.now();
+  let usedHint = false;
+  let marked = null;          // 'correct' | 'partial' | 'wrong' once logged
+  let marking = false;
+
+  // Hint = the slot's strategy ("the approach"), shown before the full memo.
+  let showHint = false, hintLoaded = false, hintLoading = false, hint = null;
+
   render();
   return root;
 
@@ -96,11 +106,20 @@ export async function questionScreen({ questionId }) {
       <div class="mm-encourage">💪 Try it first — even a rough attempt makes the solution stick.</div>
 
       <div class="q-action-row">
+        <button id="hintToggle" class="hint-btn ${showHint ? 'is-open' : ''}" ${hintLoading ? 'disabled style="opacity:.6"' : ''}>
+          ${hintLoading ? 'Getting the approach…' : showHint ? '✕ Hide hint' : '💡 Stuck? Show me the approach'}
+        </button>
+      </div>
+      <div id="hintSlot"></div>
+
+      <div class="q-action-row">
         <button id="memoToggle" class="primary-btn-block ${showMemo ? 'is-open' : ''}">
           ${showMemo ? '✕ Hide solution' : '👀 Reveal the solution'}
         </button>
       </div>
       <div id="memoSlot"></div>
+
+      <div id="selfMarkSlot"></div>
 
       <div class="q-action-row">
         <button id="aiToggle" class="ai-btn ${showAi ? 'is-open' : ''}"
@@ -150,6 +169,10 @@ export async function questionScreen({ questionId }) {
 
     root.querySelector('#qBody').appendChild(mathView({ body: combinedBody, fontSize: 16, dark }));
 
+    // Hint toggle (shows the slot's strategy as "the approach")
+    root.querySelector('#hintToggle').addEventListener('click', onHint);
+    if (showHint && !hintLoading) buildHint(dark);
+
     // Solution toggle
     root.querySelector('#memoToggle').addEventListener('click', () => {
       showMemo = !showMemo; render();
@@ -164,6 +187,8 @@ export async function questionScreen({ questionId }) {
       }));
       root.querySelector('#memoSlot').appendChild(box);
     }
+
+    buildSelfMark();
 
     // AI toggle
     root.querySelector('#aiToggle').addEventListener('click', () => {
@@ -198,7 +223,100 @@ export async function questionScreen({ questionId }) {
     if (nextId) root.querySelector('#nextBtn')?.addEventListener('click', () => navigate(`#/question/${nextId}`));
   }
 
+  // ── Hint — reveal the approach (slot strategy) before the full solution ──
+  async function onHint() {
+    if (hintLoading) return;
+    if (showHint) { showHint = false; render(); return; }
+    usedHint = true;          // asking for the approach counts as a hint
+    showHint = true;
+    if (!hintLoaded) {
+      hintLoading = true; render();
+      try {
+        if (q.slot_id) {
+          const { data } = await supabase
+            .from('strategies')
+            .select('title, body, conditions')
+            .eq('slot_id', q.slot_id).maybeSingle();
+          hint = data || null;
+        }
+      } catch { hint = null; }
+      hintLoaded = true; hintLoading = false;
+    }
+    render();
+  }
+
+  function buildHint(dark) {
+    const slot = root.querySelector('#hintSlot');
+    if (!slot) return;
+    const box = document.createElement('div');
+    box.className = 'hint-box';
+    box.innerHTML = `<div class="hint-title">💡 The approach</div>`;
+    if (hint && Array.isArray(hint.conditions) && hint.conditions.length) {
+      const bar = document.createElement('div');
+      bar.className = 'condition-bar';
+      bar.innerHTML = hint.conditions
+        .map(c => `<span class="condition-chip">${escapeHtml(c.name || c)}</span>`).join('');
+      box.appendChild(bar);
+    }
+    if (hint && hint.body) {
+      box.appendChild(mathView({ body: hint.body, fontSize: 14, dark }));
+    } else {
+      const p = document.createElement('div');
+      p.className = 'hint-fallback';
+      p.textContent = 'Re-read the question slowly. What are you given, and what must you find? '
+        + 'Name the condition it tests — then follow the steps you practised for that condition.';
+      box.appendChild(p);
+    }
+    slot.appendChild(box);
+  }
+
+  // ── Self-marking — the bit that actually feeds the progress dashboard ──
+  function buildSelfMark() {
+    const slot = root.querySelector('#selfMarkSlot');
+    if (!slot) return;
+    const box = document.createElement('div');
+    box.className = 'self-mark';
+    if (marked) {
+      const label = { correct: '✅ Got it right', partial: '🤔 Partly there', wrong: '❌ Missed it' }[marked];
+      box.classList.add('is-done', `is-${marked}`);
+      box.innerHTML = `<div class="self-mark-done">Logged: <strong>${label}</strong> — it's in your progress now.</div>`;
+    } else {
+      box.innerHTML = `
+        <div class="self-mark-q">Be honest — how did you do on this one?</div>
+        <div class="self-mark-btns">
+          <button class="sm-btn sm-correct" data-r="correct" ${marking ? 'disabled' : ''}>✅ Got it</button>
+          <button class="sm-btn sm-partial" data-r="partial" ${marking ? 'disabled' : ''}>🤔 Partly</button>
+          <button class="sm-btn sm-wrong"   data-r="wrong"   ${marking ? 'disabled' : ''}>❌ Missed it</button>
+        </div>
+        <div class="self-mark-hint">This builds your topic mastery on the dashboard.</div>`;
+      box.querySelectorAll('.sm-btn').forEach(b =>
+        b.addEventListener('click', () => logAttempt(b.dataset.r)));
+    }
+    slot.appendChild(box);
+  }
+
+  async function logAttempt(rating) {
+    if (marking || marked) return;
+    marking = true; render();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { marking = false; alert('Please sign in to save your progress.'); navigate('#/login'); return; }
+    const time_seconds = Math.min(3600, Math.round((Date.now() - attemptStart) / 1000));
+    const { error } = await supabase.from('user_attempts').insert({
+      user_id:         user.id,
+      question_id:     q.id,
+      user_answer:     `self:${rating}`,
+      is_correct:      rating === 'correct',
+      used_hint:       usedHint,
+      viewed_solution: showMemo,
+      time_seconds,
+    });
+    marking = false;
+    if (error) { alert(`Could not save your progress: ${error.message}`); render(); return; }
+    marked = rating; render();
+  }
+
   async function askAI() {
+    usedHint = true;
     aiLoading = true; showAi = true; aiText = ''; render();
     try {
       const { data, error } = await supabase.functions.invoke('explain', {

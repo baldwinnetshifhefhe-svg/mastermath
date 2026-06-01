@@ -17,6 +17,7 @@ import { strategyScreen }     from './src/screens/strategyScreen.js';
 import { paperListScreen }    from './src/screens/paperListScreen.js';
 import { questionListScreen } from './src/screens/questionListScreen.js';
 import { questionScreen }     from './src/screens/questionScreen.js';
+import { reviewScreen }       from './src/screens/reviewScreen.js';
 import { aboutScreen }        from './src/screens/aboutScreen.js';
 
 const SIDEBAR_W_OPEN   = 220;
@@ -28,6 +29,7 @@ const SIDEBAR_W_CLOSED = 60;
 const NAV = [
   { section: 'NAVIGATE' },
   { id: 'dashboard',  icon: '🏠', label: 'Dashboard',  defaultHash: '#/',  patterns: [/^#\/$/] },
+  { id: 'review',     icon: '🔁', label: 'Review',     defaultHash: '#/review', patterns: [/^#\/review$/] },
 
   { section: 'GRADE 12' },
   { id: 'g12p1', icon: '📘', label: 'Paper 1', defaultHash: '#/strategies/12/1', patterns: [/^#\/strategies\/12\/1$/] },
@@ -51,6 +53,7 @@ const NAV = [
 const ROUTES = [
   { match: /^#\/login$/,                       build: () => loginScreen(),                                                 fullScreen: true },
   { match: /^#\/$/,                            build: () => dashboardScreen(),                                             needsAuth: true, title: 'Dashboard' },
+  { match: /^#\/review$/,                      build: () => reviewScreen(),                                                needsAuth: true, title: 'Review' },
   { match: /^#\/strategies\/(\d+)\/(\d+)$/,    build: (m) => homeScreen({ grade: Number(m[1]), paperNumber: Number(m[2]) }), needsAuth: true, title: 'Strategies' },
   { match: /^#\/strategy\/(.+)$/,              build: (m) => strategyScreen({ slotId: m[1] }),                             needsAuth: true, title: 'Strategy' },
   { match: /^#\/papers(?:\/(\d+))?$/,          build: (m) => paperListScreen({ grade: m[1] ? Number(m[1]) : 12 }),         needsAuth: true, title: 'Past Papers' },
