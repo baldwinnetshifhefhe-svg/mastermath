@@ -17,6 +17,7 @@ import { strategyScreen }     from './src/screens/strategyScreen.js';
 import { paperListScreen }    from './src/screens/paperListScreen.js';
 import { questionListScreen } from './src/screens/questionListScreen.js';
 import { questionScreen }     from './src/screens/questionScreen.js';
+import { practiceSessionScreen } from './src/screens/practiceSessionScreen.js';
 import { reviewScreen }       from './src/screens/reviewScreen.js';
 import { aboutScreen }        from './src/screens/aboutScreen.js';
 
@@ -56,6 +57,7 @@ const ROUTES = [
   { match: /^#\/review$/,                      build: () => reviewScreen(),                                                needsAuth: true, title: 'Review' },
   { match: /^#\/strategies\/(\d+)\/(\d+)$/,    build: (m) => homeScreen({ grade: Number(m[1]), paperNumber: Number(m[2]) }), needsAuth: true, title: 'Strategies' },
   { match: /^#\/strategy\/(.+)$/,              build: (m) => strategyScreen({ slotId: m[1] }),                             needsAuth: true, title: 'Strategy' },
+  { match: /^#\/practice\/(.+)$/,              build: (m) => practiceSessionScreen({ slotId: m[1] }),                      needsAuth: true, title: 'Practice' },
   { match: /^#\/papers(?:\/(\d+))?$/,          build: (m) => paperListScreen({ grade: m[1] ? Number(m[1]) : 12 }),         needsAuth: true, title: 'Past Papers' },
   { match: /^#\/questions\/(.+)$/,             build: (m) => questionListScreen({ paperId: m[1] }),                        needsAuth: true, title: 'Questions' },
   { match: /^#\/question\/(.+)$/,              build: (m) => questionScreen({ questionId: m[1] }),                         needsAuth: true, title: 'Question' },

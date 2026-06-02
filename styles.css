@@ -847,3 +847,35 @@ input:focus, textarea:focus, select:focus {
 .sx-input { padding: 10px 12px; border: 1px solid var(--border-2); border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 14px; }
 .sx-suggest-actions { display: flex; align-items: center; gap: 12px; }
 .sx-suggest-msg { font-size: 13px; color: var(--text-muted); }
+
+/* ── Practice session ────────────────────────────────────────────────────── */
+.ps-start-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  width: 100%; margin: 4px 0 16px; padding: 14px; cursor: pointer;
+  background: var(--accent); color: #fff; border: none; border-radius: 10px;
+  font-family: inherit; font-size: 16px; font-weight: 800;
+}
+.ps-start-btn:hover { filter: brightness(1.05); }
+.ps-start-sub { font-size: 12px; font-weight: 600; opacity: .9; }
+.ps-progress { margin: 6px 0 14px; }
+.ps-progress-bar { height: 8px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
+.ps-progress-fill { height: 100%; background: var(--accent); transition: width .25s ease; }
+.ps-progress-text { font-size: 12px; color: var(--text-muted); margin-top: 6px; font-weight: 700; }
+.ps-diagrams { display: flex; flex-direction: column; gap: 12px; }
+.ps-body { margin: 6px 0; }
+.ps-memo { margin-top: 10px; }
+.ps-mark { margin-top: 12px; }
+.ps-summary {
+  background: var(--surface); border: 1px solid var(--border-2); border-radius: 12px;
+  padding: 26px 22px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.ps-score { font-size: 46px; font-weight: 800; color: var(--accent); line-height: 1; }
+.ps-score-sub { font-size: 14px; color: var(--text-muted); font-weight: 700; }
+.ps-breakdown { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 6px 0; }
+.ps-pill { font-size: 13px; font-weight: 700; border-radius: 14px; padding: 5px 12px; }
+.ps-correct { background: var(--accent-soft); color: var(--accent); }
+.ps-partial { background: #fdf3e0; color: #c98a00; }
+.ps-wrong   { background: #fdecea; color: #c0392b; }
+.ps-msg { font-size: 15px; color: var(--text); max-width: 420px; line-height: 1.5; }
+.ps-note { font-size: 12px; color: var(--text-muted); }
+.ps-summary-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }

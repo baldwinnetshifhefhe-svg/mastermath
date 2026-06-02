@@ -112,6 +112,15 @@ export async function strategyScreen({ slotId }) {
       + 'Tap "Show memo" to check, and mark how you did; it feeds your progress.';
     box.appendChild(intro);
 
+    const startBtn = document.createElement('button');
+    startBtn.className = 'ps-start-btn';
+    startBtn.innerHTML = `▶ Start a Practice session <span class="ps-start-sub">${Math.min(5, groups.length)} random questions, self-marked</span>`;
+    startBtn.addEventListener('click', () => {
+      sessionStorage.setItem('currentSlot', JSON.stringify(slot));
+      navigate(`#/practice/${slot.id}`);
+    });
+    box.appendChild(startBtn);
+
     // Render each block's heavy KaTeX body only as it nears the viewport.
     const io = ('IntersectionObserver' in window)
       ? new IntersectionObserver((entries) => {
