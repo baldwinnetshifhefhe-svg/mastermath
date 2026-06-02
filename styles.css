@@ -805,3 +805,45 @@ input:focus, textarea:focus, select:focus {
 }
 .report-card-btn:hover { filter: brightness(1.04); }
 .report-card-btn[disabled] { opacity: .6; cursor: default; }
+
+/* ── Studyclix-style inline practice blocks ──────────────────────────────── */
+.sx-block {
+  background: var(--surface); border: 1px solid var(--border-2);
+  border-radius: 12px; padding: 16px 18px; margin-bottom: 18px;
+}
+.sx-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.sx-head-title { font-size: 14px; font-weight: 800; color: var(--accent); }
+.sx-head-actions { display: flex; align-items: center; gap: 8px; }
+.sx-badge { font-size: 10px; font-weight: 800; letter-spacing: .5px; background: var(--accent-soft); color: var(--accent); border-radius: 6px; padding: 3px 8px; }
+.sx-icon-btn {
+  background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 6px;
+  width: 30px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; text-decoration: none; color: var(--text);
+}
+.sx-icon-btn.on { color: #c98a00; border-color: #c98a00; }
+.sx-marks { font-size: 12px; font-weight: 700; color: var(--text-muted); margin: 2px 0 10px; }
+.sx-diagrams { display: flex; flex-direction: column; gap: 12px; }
+.sx-body { margin: 6px 0; }
+.sx-actions { margin: 10px 0 2px; }
+.sx-memo-btn {
+  background: var(--accent); color: #fff; border: none; border-radius: 8px;
+  padding: 9px 18px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.sx-memo-btn:hover { filter: brightness(1.05); }
+.sx-memo { margin-top: 10px; }
+.sx-mark { margin-top: 12px; }
+
+/* ── Videos & Notes ──────────────────────────────────────────────────────── */
+.sx-videos-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.sx-video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; margin-top: 14px; }
+.sx-video-card {
+  display: block; text-decoration: none; color: var(--text);
+  background: var(--surface); border: 1px solid var(--border-2); border-radius: 10px; overflow: hidden;
+}
+.sx-video-card:hover { border-color: var(--accent); }
+.sx-video-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; background: var(--surface-2); }
+.sx-video-title { padding: 10px 12px; font-size: 13px; font-weight: 600; line-height: 1.35; }
+.sx-suggest { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.sx-input { padding: 10px 12px; border: 1px solid var(--border-2); border-radius: 8px; background: var(--surface); color: var(--text); font-family: inherit; font-size: 14px; }
+.sx-suggest-actions { display: flex; align-items: center; gap: 12px; }
+.sx-suggest-msg { font-size: 13px; color: var(--text-muted); }
