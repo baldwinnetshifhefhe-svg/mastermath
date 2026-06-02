@@ -102,7 +102,8 @@ export async function strategyScreen({ slotId }) {
   function practiceTab(dark, groups) {
     const box = document.createElement('div');
     if (!groups.length) {
-      box.innerHTML = `<div class="empty-list">No questions loaded yet for this topic.</div>`;
+      box.innerHTML = `<div class="empty-list">No past-paper questions loaded for this topic yet —
+        see the <strong>worked example in the Strategy tab</strong>. Real DBE questions appear here once papers are added.</div>`;
       return box;
     }
     const intro = document.createElement('div');
