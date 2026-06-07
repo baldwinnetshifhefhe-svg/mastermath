@@ -20,6 +20,7 @@ import { questionScreen }     from './src/screens/questionScreen.js';
 import { practiceSessionScreen } from './src/screens/practiceSessionScreen.js';
 import { reviewScreen }       from './src/screens/reviewScreen.js';
 import { aboutScreen }        from './src/screens/aboutScreen.js';
+import { conditionsPreviewScreen } from './src/screens/conditionsPreviewScreen.js';
 
 const SIDEBAR_W_OPEN   = 220;
 const SIDEBAR_W_CLOSED = 60;
@@ -45,6 +46,7 @@ const NAV = [
   { id: 'g10p2', icon: '📗', label: 'Paper 2', defaultHash: '#/strategies/10/2', patterns: [/^#\/strategies\/10\/2$/] },
 
   { section: 'RESOURCES' },
+  { id: 'conditions-preview', icon: '🧪', label: 'Conditions (PREVIEW)', defaultHash: '#/conditions-preview', patterns: [/^#\/conditions-preview$/] },
   { id: 'papers', icon: '📑', label: 'Past Papers', defaultHash: '#/papers/12',
     patterns: [/^#\/papers(\/(\d+))?$/, /^#\/questions\/(.+)$/, /^#\/question\/(.+)$/] },
   { id: 'about',  icon: '📖', label: 'About',       defaultHash: '#/about', patterns: [/^#\/about$/] },
@@ -62,6 +64,7 @@ const ROUTES = [
   { match: /^#\/questions\/(.+)$/,             build: (m) => questionListScreen({ paperId: m[1] }),                        needsAuth: true, title: 'Questions' },
   { match: /^#\/question\/(.+)$/,              build: (m) => questionScreen({ questionId: m[1] }),                         needsAuth: true, title: 'Question' },
   { match: /^#\/about$/,                       build: () => aboutScreen(),                                                 needsAuth: true, title: 'About MasterMaths' },
+  { match: /^#\/conditions-preview$/,          build: () => conditionsPreviewScreen(),                                     needsAuth: true, title: 'Conditions (Preview)' },
 ];
 
 const COLLAPSED_KEY = 'mm-sidebar-collapsed';
